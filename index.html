@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Revan — Autonomous Aerial Security</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #040608;
+    --dark: #080c10;
+    --panel: #0d1420;
+    --card: #111827;
+    --border: rgba(56,189,248,0.15);
+    --blue: #38bdf8;
+    --blue-glow: rgba(56,189,248,0.35);
+    --cyan: #22d3ee;
+    --accent: #0ea5e9;
+    --red: #f43f5e;
+    --gold: #f59e0b;
+    --white: #f0f6ff;
+    --muted: #94a3b8;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-ui: 'Rajdhani', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── CUSTOM SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(4,6,8,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+  .nav-cta {
+    background: var(--blue);
+    color: var(--black) !important;
+    padding: 0.5rem 1.4rem;
+    border-radius: 3px;
+    font-weight: 700 !important;
+    transition: background 0.2s, transform 0.1s !important;
+  }
+  .nav-cta:hover { background: var(--cyan) !important; transform: scale(1.03); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 65% 50%, rgba(56,189,248,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(14,165,233,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at center, black 40%, transparent 100%);
+  }
+  .hero-content { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.35rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 8vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .hero-title .highlight { color: var(--blue); }
+  .hero-subtitle {
+    font-family: var(--font-ui);
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .hero-taglines {
+    margin-bottom: 2.5rem;
+  }
+  .hero-taglines p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .hero-taglines p strong { color: var(--white); }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--blue);
+    color: var(--black);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem 2rem;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 0 24px rgba(56,189,248,0.3);
+  }
+  .btn-primary:hover {
+    background: var(--cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 0 36px rgba(56,189,248,0.5);
+  }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: transparent;
+    color: var(--blue);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem 2rem;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover {
+    border-color: var(--blue);
+    background: rgba(56,189,248,0.06);
+    transform: translateY(-2px);
+  }
+
+  /* ─── HERO VISUAL ─── */
+  .hero-visual {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drone-frame {
+    position: relative;
+    width: 500px;
+    height: 500px;
+  }
+  .drone-svg-wrap {
+    width: 100%;
+    height: 100%;
+    animation: hover-float 4s ease-in-out infinite;
+  }
+  @keyframes hover-float {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-18px) rotate(1deg); }
+  }
+  .drone-glow {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 30px;
+    background: var(--blue);
+    filter: blur(30px);
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: glow-pulse 4s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%,100% { opacity: 0.3; transform: translateX(-50%) scaleX(1); }
+    50% { opacity: 0.6; transform: translateX(-50%) scaleX(0.7); }
+  }
+  /* HUD overlays */
+  .hud-overlay {
+    position: absolute; top: 10%; right: -8%;
+    background: rgba(8,12,16,0.9);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--blue);
+    padding: 0.8rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    min-width: 150px;
+    animation: hud-fade 3s ease-in-out infinite;
+  }
+  @keyframes hud-fade { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+  .hud-overlay .hud-row { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); margin-bottom: 0.3rem; }
+  .hud-overlay .hud-row span:last-child { color: var(--cyan); font-weight: 600; }
+  .hud-overlay .hud-row .ok { color: #4ade80; }
+  .hud-rec {
+    display: flex; align-items: center; gap: 0.4rem;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.15em;
+  }
+  .hud-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1s infinite; }
+  .hud-bottom {
+    position: absolute; bottom: 8%; left: -12%;
+    background: rgba(8,12,16,0.9);
+    border: 1px solid var(--border);
+    border-right: 2px solid var(--gold);
+    padding: 0.7rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+  .hud-bottom p { color: var(--muted); margin-top: 0.15rem; font-size: 0.65rem; }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 5%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    color: var(--blue);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 6rem 5%; }
+  .section-label {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  /* ─── PROBLEMS ─── */
+  .problems { background: var(--dark); }
+  .problems-header { max-width: 600px; margin-bottom: 4rem; }
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .problem-card {
+    background: var(--panel);
+    padding: 2rem;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .problem-card:hover { background: #111d2e; }
+  .problem-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .problem-card:hover::before { opacity: 1; }
+  .problem-num {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    color: rgba(56,189,248,0.1);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  .problem-icon {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .problem-card h3 {
+    font-family: var(--font-ui);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .problem-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── FEATURES ─── */
+  .features-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .feature-list { display: flex; flex-direction: column; gap: 2rem; }
+  .feature-item {
+    display: flex; gap: 1.2rem;
+    padding: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: default;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .feature-item:hover {
+    border-color: var(--border);
+    background: var(--panel);
+  }
+  .feature-icon {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border-radius: 8px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .feature-text h3 {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    color: var(--white);
+  }
+  .feature-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+
+  /* SPECS PANEL */
+  .specs-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .specs-panel-header {
+    padding: 1.2rem 1.5rem;
+    background: rgba(56,189,248,0.07);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .specs-panel-header h4 {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.9rem 1.5rem;
+    border-bottom: 1px solid rgba(56,189,248,0.06);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .spec-val {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    text-align: right;
+  }
+  .spec-val.good { color: #4ade80; }
+  .spec-bar-wrap { margin-top: 1.2rem; }
+  .spec-bar-label {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .spec-bar { height: 4px; background: rgba(56,189,248,0.1); border-radius: 2px; overflow: hidden; }
+  .spec-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+
+  /* ─── PRODUCT SECTION ─── */
+  .product-section { background: var(--dark); }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(56,189,248,0.12);
+  }
+  .product-card.featured {
+    border-color: var(--blue);
+    box-shadow: 0 0 40px rgba(56,189,248,0.15);
+  }
+  .featured-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--blue);
+    color: var(--black);
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+  .product-visual {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, rgba(56,189,248,0.06) 0%, transparent 70%);
+    border-bottom: 1px solid var(--border);
+    font-size: 5rem;
+    position: relative;
+  }
+  .product-info { padding: 1.5rem; }
+  .product-name {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.4rem;
+  }
+  .product-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .product-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; }
+  .product-features { list-style: none; margin-bottom: 1.5rem; }
+  .product-features li {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.8rem; color: var(--muted);
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(56,189,248,0.06);
+  }
+  .product-features li:last-child { border-bottom: none; }
+  .product-features li::before { content: '▸'; color: var(--blue); flex-shrink: 0; }
+  .product-price {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+  }
+  .product-price sub { font-size: 1rem; color: var(--muted); vertical-align: baseline; }
+  .product-price-note { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.2rem; }
+  .add-to-cart {
+    width: 100%;
+    background: var(--blue);
+    color: var(--black);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .add-to-cart:hover { background: var(--cyan); transform: scale(1.01); }
+  .add-to-cart.outline {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--border);
+  }
+  .add-to-cart.outline:hover { background: rgba(56,189,248,0.07); border-color: var(--blue); }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-it-works { background: var(--black); }
+  .steps-layout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 4rem; position: relative; }
+  .steps-layout::before {
+    content: '';
+    position: absolute;
+    top: 2.2rem; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  }
+  .step {
+    text-align: center;
+    padding: 0 1rem;
+    position: relative;
+  }
+  .step-num-wrap {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--dark);
+    border: 2px solid var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    position: relative; z-index: 1;
+  }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--blue);
+    letter-spacing: 0.05em;
+  }
+  .step-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .step h3 {
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .step p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials { background: var(--dark); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .testi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.8rem;
+    transition: border-color 0.3s;
+  }
+  .testi-card:hover { border-color: rgba(56,189,248,0.4); }
+  .testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
+  .testi-quote {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    position: relative;
+    padding-left: 1rem;
+    border-left: 2px solid var(--blue);
+  }
+  .testi-author { display: flex; align-items: center; gap: 0.8rem; }
+  .testi-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .testi-name {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .testi-role { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+  .testi-tag {
+    margin-left: auto;
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.3);
+    color: #4ade80;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    background: var(--black);
+    text-align: center;
+    padding: 8rem 5%;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section .section-title { font-size: clamp(3rem, 6vw, 6rem); margin-bottom: 1.5rem; }
+  .cta-section .section-desc { margin: 0 auto 3rem; text-align: center; max-width: 500px; }
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5% 2rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-brand .nav-logo { display: inline-block; margin-bottom: 0.8rem; }
+  .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 240px; }
+  .footer-col h5 {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--blue); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+  }
+  .footer-bottom p { font-size: 0.75rem; color: var(--muted); }
+  .footer-bottom a { color: var(--blue); text-decoration: none; }
+
+  /* ─── CART DRAWER ─── */
+  .cart-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 400px; max-width: 100%;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { transform: translateX(0); }
+  .cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-header h3 {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .cart-close {
+    background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .cart-close:hover { color: var(--white); }
+  .cart-body { flex: 1; overflow-y: auto; padding: 1.5rem; }
+  .cart-empty { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 3rem; }
+  .cart-item {
+    display: flex; gap: 1rem; align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cart-item-icon { font-size: 2rem; flex-shrink: 0; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-family: var(--font-ui); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; }
+  .cart-item-price { color: var(--blue); font-size: 0.8rem; margin-top: 0.2rem; }
+  .cart-item-remove {
+    background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem;
+    transition: color 0.2s;
+  }
+  .cart-item-remove:hover { color: var(--red); }
+  .cart-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .cart-total span:last-child { font-size: 1.2rem; color: var(--blue); font-weight: 700; }
+  .checkout-btn {
+    width: 100%;
+    background: var(--blue);
+    color: var(--black);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 1rem;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .checkout-btn:hover { background: var(--cyan); }
+  /* Cart count badge */
+  .cart-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    background: var(--red);
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    margin-left: 0.3rem;
+    display: none;
+  }
+  .cart-btn {
+    display: flex; align-items: center; gap: 0.3rem;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 0.45rem 0.9rem;
+    border-radius: 3px; cursor: pointer; font-family: var(--font-ui);
+    font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .cart-btn:hover { color: var(--white); border-color: var(--blue); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--panel);
+    border: 1px solid var(--blue);
+    color: var(--white);
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    z-index: 300;
+    transition: transform 0.4s ease;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── DRONE SVG ─── */
+  .drone-body { fill: #1e3a5f; }
+  .drone-arm { stroke: #2d6a9f; stroke-width: 3; fill: none; }
+  .drone-prop { fill: none; stroke: #38bdf8; stroke-width: 2.5; }
+  .drone-cam { fill: #38bdf8; }
+  .drone-light { fill: #f43f5e; }
+  .drone-led { fill: #22d3ee; opacity: 0.8; }
+  .scan-ring {
+    fill: none;
+    stroke: rgba(56,189,248,0.3);
+    stroke-width: 1;
+    animation: scan-expand 2.5s ease-out infinite;
+    transform-origin: 250px 270px;
+  }
+  @keyframes scan-expand {
+    0% { r: 0; opacity: 0.6; }
+    100% { r: 100; opacity: 0; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; text-align: center; min-height: auto; padding: 120px 5% 60px; }
+    .hero-actions { justify-content: center; }
+    .drone-frame { width: 340px; height: 340px; margin: 0 auto; }
+    .hud-overlay { display: none; }
+    .hud-bottom { display: none; }
+    .problems-grid { grid-template-columns: 1fr 1fr; }
+    .features-layout { grid-template-columns: 1fr; }
+    .product-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .steps-layout { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .steps-layout::before { display: none; }
+    .testi-grid { grid-template-columns: 1fr; max-width: 500px; margin-left: auto; margin-right: auto; }
+    footer { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .problems-grid { grid-template-columns: 1fr; }
+    .steps-layout { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; }
+    .stats-bar { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#"><span>RE</span>VAN</a>
+  <ul class="nav-links">
+    <li><a href="#products">Products</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#products" class="nav-cta">Order Now</a></li>
+  </ul>
+  <button class="cart-btn" onclick="toggleCart()">
+    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> Live — Tamil Nadu</div>
+    <h1 class="hero-title"><span class="highlight">REVAN</span><br/>AEROEYE</h1>
+    <p class="hero-subtitle">Autonomous Aerial Home Security</p>
+    <div class="hero-taglines">
+      <p><strong>Zero Blind Spots.</strong> 100% Peace of Mind.</p>
+      <p>One drone. Complete coverage. Zero compromise.</p>
+    </div>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">⚡ Order Now</a>
+      <a href="#features" class="btn-outline">↓ Explore Features</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="drone-frame">
+      <!-- HUD overlays -->
+      <div class="hud-overlay">
+        <div class="hud-rec"><span class="hud-dot"></span> LIVE FEED</div>
+        <div class="hud-row"><span>BATTERY</span><span class="ok">92%</span></div>
+        <div class="hud-row"><span>ALTITUDE</span><span>12m</span></div>
+        <div class="hud-row"><span>SIGNAL</span><span class="ok">STABLE</span></div>
+        <div class="hud-row"><span>AI MODE</span><span>ACTIVE</span></div>
+      </div>
+      <div class="hud-bottom">
+        ⚠ VISITOR DETECTED<p>CONFIDENCE: 99% · ERODE DISTRICT</p>
+      </div>
+      <!-- Drone SVG -->
+      <div class="drone-svg-wrap">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <!-- Scan rings -->
+          <circle class="scan-ring" cx="250" cy="270" r="0" style="animation-delay:0s"/>
+          <circle class="scan-ring" cx="250" cy="270" r="0" style="animation-delay:1.2s"/>
+
+          <!-- Arms -->
+          <line class="drone-arm" x1="250" y1="240" x2="120" y2="170" stroke-linecap="round"/>
+          <line class="drone-arm" x1="250" y1="240" x2="380" y2="170" stroke-linecap="round"/>
+          <line class="drone-arm" x1="250" y1="270" x2="120" y2="340" stroke-linecap="round"/>
+          <line class="drone-arm" x1="250" y1="270" x2="380" y2="340" stroke-linecap="round"/>
+
+          <!-- Body -->
+          <rect class="drone-body" x="210" y="225" width="80" height="60" rx="10" ry="10"/>
+          <rect fill="#0ea5e9" opacity="0.15" x="214" y="229" width="72" height="52" rx="8" ry="8"/>
+
+          <!-- Camera -->
+          <circle class="drone-cam" cx="250" cy="285" r="10"/>
+          <circle fill="#040608" cx="250" cy="285" r="6"/>
+          <circle fill="#38bdf8" opacity="0.5" cx="250" cy="285" r="3"/>
+
+          <!-- Front LED -->
+          <circle class="drone-light" cx="250" cy="230" r="4"/>
+
+          <!-- Side LEDs -->
+          <circle class="drone-led" cx="210" cy="255" r="3"/>
+          <circle class="drone-led" cx="290" cy="255" r="3"/>
+
+          <!-- Propeller hubs TL -->
+          <circle fill="#0d1420" stroke="#38bdf8" stroke-width="2" cx="120" cy="155" r="22"/>
+          <ellipse class="drone-prop" cx="120" cy="155" rx="38" ry="8" transform="rotate(25,120,155)" opacity="0.7"/>
+          <ellipse class="drone-prop" cx="120" cy="155" rx="38" ry="8" transform="rotate(-65,120,155)" opacity="0.7"/>
+
+          <!-- Propeller hubs TR -->
+          <circle fill="#0d1420" stroke="#38bdf8" stroke-width="2" cx="380" cy="155" r="22"/>
+          <ellipse class="drone-prop" cx="380" cy="155" rx="38" ry="8" transform="rotate(-25,380,155)" opacity="0.7"/>
+          <ellipse class="drone-prop" cx="380" cy="155" rx="38" ry="8" transform="rotate(65,380,155)" opacity="0.7"/>
+
+          <!-- Propeller hubs BL -->
+          <circle fill="#0d1420" stroke="#38bdf8" stroke-width="2" cx="120" cy="355" r="22"/>
+          <ellipse class="drone-prop" cx="120" cy="355" rx="38" ry="8" transform="rotate(-25,120,355)" opacity="0.7"/>
+          <ellipse class="drone-prop" cx="120" cy="355" rx="38" ry="8" transform="rotate(65,120,355)" opacity="0.7"/>
+
+          <!-- Propeller hubs BR -->
+          <circle fill="#0d1420" stroke="#38bdf8" stroke-width="2" cx="380" cy="355" r="22"/>
+          <ellipse class="drone-prop" cx="380" cy="355" rx="38" ry="8" transform="rotate(25,380,355)" opacity="0.7"/>
+          <ellipse class="drone-prop" cx="380" cy="355" rx="38" ry="8" transform="rotate(-65,380,355)" opacity="0.7"/>
+
+          <!-- Detection box -->
+          <rect x="185" y="290" width="130" height="100" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+          <text x="185" y="405" fill="#38bdf8" font-family="monospace" font-size="10" opacity="0.7">VISITOR 99%</text>
+
+          <!-- Corner reticles -->
+          <line x1="185" y1="290" x2="200" y2="290" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="185" y1="290" x2="185" y2="305" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="315" y1="290" x2="300" y2="290" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="315" y1="290" x2="315" y2="305" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="185" y1="390" x2="200" y2="390" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="185" y1="390" x2="185" y2="375" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="315" y1="390" x2="300" y2="390" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="315" y1="390" x2="315" y2="375" stroke="#38bdf8" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="drone-glow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">360°</div>
+    <div class="stat-label">Full Coverage</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">4K</div>
+    <div class="stat-label">Live HD Streaming</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">99%</div>
+    <div class="stat-label">AI Detection Accuracy</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">6hr</div>
+    <div class="stat-label">Battery Life</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Blind Spots</div>
+  </div>
+</div>
+
+<!-- ── PROBLEMS ── -->
+<section class="problems" id="problems">
+  <div class="problems-header">
+    <span class="section-label">Why Revan?</span>
+    <h2 class="section-title">Current Security <br/>Is Broken</h2>
+    <p class="section-desc">Traditional CCTV systems leave massive gaps. Revan's AeroEye drone eliminates every one of them.</p>
+  </div>
+  <div class="problems-grid">
+    <div class="problem-card">
+      <div class="problem-num">01</div>
+      <div class="problem-icon">👁</div>
+      <h3>Blind Spots Everywhere</h3>
+      <p>Even dozens of CCTV cameras can't cover every corner. Alleys, backyards, rooftops — all remain invisible.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">02</div>
+      <div class="problem-icon">💸</div>
+      <h3>Expensive & High Maintenance</h3>
+      <p>Conventional surveillance systems cost more to maintain each year than they did to install. Labor. Wiring. Upkeep.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">03</div>
+      <div class="problem-icon">⏰</div>
+      <h3>Slow Response Time</h3>
+      <p>By the time an alert is noticed, reviewed, and acted on — it's too late. Static systems don't move with threats.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">04</div>
+      <div class="problem-icon">🚨</div>
+      <h3>Constant False Alarms</h3>
+      <p>Cheap AI triggers alerts for stray dogs, shadows, and leaves. Real threats get lost in the noise.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">05</div>
+      <div class="problem-icon">📡</div>
+      <h3>Poor Connectivity</h3>
+      <p>Cameras drop feeds, buffer endlessly, or go dark during power fluctuations — exactly when you need them most.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-num">06</div>
+      <div class="problem-icon">🏭</div>
+      <h3>Unscalable for Large Sites</h3>
+      <p>Textile mills, warehouses, industrial complexes — you'd need hundreds of cameras to cover them. Impractical.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="features-layout">
+    <div>
+      <span class="section-label">The AeroEye — Features</span>
+      <h2 class="section-title">Built Different.<br/>Built for India.</h2>
+      <p class="section-desc" style="margin-bottom:2.5rem">The AeroEye is engineered specifically for Indian environments — from Erode's textile districts to Salem's residential colonies.</p>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">🔭</div>
+          <div class="feature-text">
+            <h3>360° Autonomous Patrol</h3>
+            <p>Eliminates all blind spots with intelligent aerial patrol. Programs custom routes around your property and adapts in real time.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-text">
+            <h3>Adaptive AI Detection</h3>
+            <p>Trained on Indian environments. Distinguishes stray animals from intruders — eliminating 96% of false alarms from day one.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📶</div>
+          <div class="feature-text">
+            <h3>Resilient 4G/5G Connectivity</h3>
+            <p>Low-latency HD streaming optimized for local networks. Watch live from anywhere via the Revan mobile app.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text">
+            <h3>Rapid Emergency Response</h3>
+            <p>AI-triggered alerts deploy the drone instantly. Critical seconds saved in emergencies, intrusions, and rescue situations.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔋</div>
+          <div class="feature-text">
+            <h3>Auto-Dock & Recharge</h3>
+            <p>Returns to its docking station automatically to recharge. Continuous 24/7 coverage without any manual intervention.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="specs-panel">
+        <div class="specs-panel-header">
+          <span>⚙</span>
+          <h4>Technical Specifications</h4>
+        </div>
+        <div class="spec-row"><span class="spec-key">Model</span><span class="spec-val">AeroEye S1 — India Edition</span></div>
+        <div class="spec-row"><span class="spec-key">Camera</span><span class="spec-val">4K UHD · 120° FOV</span></div>
+        <div class="spec-row"><span class="spec-key">Flight Time</span><span class="spec-val good">6 Hours (Dock Cycle)</span></div>
+        <div class="spec-row"><span class="spec-key">Max Speed</span><span class="spec-val">54 km/h</span></div>
+        <div class="spec-row"><span class="spec-key">Coverage Area</span><span class="spec-val good">Up to 5,000 sq. m.</span></div>
+        <div class="spec-row"><span class="spec-key">Night Vision</span><span class="spec-val good">Thermal + IR</span></div>
+        <div class="spec-row"><span class="spec-key">AI Accuracy</span><span class="spec-val good">99% Verified</span></div>
+        <div class="spec-row"><span class="spec-key">Connectivity</span><span class="spec-val">4G LTE / 5G / Wi-Fi 6</span></div>
+        <div class="spec-row"><span class="spec-key">Weather Rating</span><span class="spec-val">IP54 · Wind ≤ 40 km/h</span></div>
+        <div class="spec-row"><span class="spec-key">DGCA Status</span><span class="spec-val good">Certified Compliant</span></div>
+        <div class="spec-row"><span class="spec-key">App Platform</span><span class="spec-val">iOS & Android</span></div>
+        <div style="padding:1.5rem;">
+          <div class="spec-bar-wrap">
+            <div class="spec-bar-label"><span>AI Detection</span><span>99%</span></div>
+            <div class="spec-bar"><div class="spec-bar-fill" style="width:99%"></div></div>
+          </div>
+          <div class="spec-bar-wrap">
+            <div class="spec-bar-label"><span>Coverage vs CCTV</span><span>340%</span></div>
+            <div class="spec-bar"><div class="spec-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="spec-bar-wrap">
+            <div class="spec-bar-label"><span>Cost Savings vs CCTV Network</span><span>65%</span></div>
+            <div class="spec-bar"><div class="spec-bar-fill" style="width:65%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-it-works" id="how">
+  <div style="text-align:center; max-width:600px; margin:0 auto 1rem;">
+    <span class="section-label">Process</span>
+    <h2 class="section-title">Up & Guarding<br/>in 15 Minutes</h2>
+    <p class="section-desc" style="margin:0 auto">Setup is effortless. Revan does the rest — autonomously, 24/7.</p>
+  </div>
+  <div class="steps-layout">
+    <div class="step">
+      <div class="step-num-wrap"><span class="step-num">01</span></div>
+      <div class="step-icon">📦</div>
+      <h3>Unbox & Place</h3>
+      <p>Install the compact docking station at any outdoor power point. No wiring, no drilling, no technician needed.</p>
+    </div>
+    <div class="step">
+      <div class="step-num-wrap"><span class="step-num">02</span></div>
+      <div class="step-icon">📱</div>
+      <h3>Connect the App</h3>
+      <p>Download the Revan app, connect to your home Wi-Fi or 4G SIM, and map your patrol zones in under 5 minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num-wrap"><span class="step-num">03</span></div>
+      <div class="step-icon">🤖</div>
+      <h3>AI Learns Your Space</h3>
+      <p>The AeroEye maps your property on its first patrol — learning safe zones, entry points, and normal activity patterns.</p>
+    </div>
+    <div class="step">
+      <div class="step-num-wrap"><span class="step-num">04</span></div>
+      <div class="step-icon">🛡</div>
+      <h3>24/7 Protection</h3>
+      <p>From then on, the AeroEye patrols autonomously, alerts you instantly, and recharges itself. You just get notified.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRODUCTS ── -->
+<section class="product-section" id="products">
+  <div style="text-align:center; max-width:600px; margin:0 auto;">
+    <span class="section-label">Shop</span>
+    <h2 class="section-title">Choose Your Plan</h2>
+    <p class="section-desc" style="margin:0 auto">One-time hardware + flexible protection plans. No hidden fees. Made for Tamil Nadu.</p>
+  </div>
+  <div class="product-grid">
+    <!-- Basic -->
+    <div class="product-card">
+      <div class="product-visual">🏠</div>
+      <div class="product-info">
+        <p class="product-name">For Homes</p>
+        <h3 class="product-title">AEROEYE HOME</h3>
+        <p class="product-desc">Perfect for houses, apartments, and small compounds. Replaces 4–6 fixed CCTV cameras at a fraction of the cost.</p>
+        <ul class="product-features">
+          <li>AeroEye S1 Drone + Dock Station</li>
+          <li>360° Autonomous Night Patrol</li>
+          <li>4K Live Streaming App</li>
+          <li>AI Intruder Detection</li>
+          <li>30-Day Free Cloud Storage</li>
+          <li>1-Year Hardware Warranty</li>
+        </ul>
+        <div class="product-price">₹24,999<sub> </sub></div>
+        <p class="product-price-note">One-time payment · Free delivery across Tamil Nadu</p>
+        <button class="add-to-cart outline" onclick="addToCart('AeroEye Home', '₹24,999', '🏠')">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Pro — FEATURED -->
+    <div class="product-card featured">
+      <span class="featured-badge">MOST POPULAR</span>
+      <div class="product-visual">🏢</div>
+      <div class="product-info">
+        <p class="product-name">For Offices & Shops</p>
+        <h3 class="product-title">AEROEYE PRO</h3>
+        <p class="product-desc">Ideal for shops, offices, showrooms, and mid-size commercial spaces. Includes priority support and extended cloud storage.</p>
+        <ul class="product-features">
+          <li>AeroEye S1 Pro Drone + Dock</li>
+          <li>Thermal + IR Night Vision</li>
+          <li>Live 4G/5G Streaming · 4K</li>
+          <li>Advanced AI + False Alarm Filter</li>
+          <li>90-Day Cloud Storage</li>
+          <li>Priority Support · 2-Year Warranty</li>
+          <li>Quarterly Maintenance Included</li>
+        </ul>
+        <div class="product-price">₹39,999<sub> </sub></div>
+        <p class="product-price-note">One-time payment · Includes on-site installation</p>
+        <button class="add-to-cart" onclick="addToCart('AeroEye Pro', '₹39,999', '🏢')">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Enterprise -->
+    <div class="product-card">
+      <div class="product-visual">🏭</div>
+      <div class="product-info">
+        <p class="product-name">For Warehouses & Factories</p>
+        <h3 class="product-title">AEROEYE FLEET</h3>
+        <p class="product-desc">Fleet of 3 coordinated drones for large industrial sites, textile mills, and warehouses in Erode and Coimbatore districts.</p>
+        <ul class="product-features">
+          <li>3x AeroEye S1 Pro Drones + Docks</li>
+          <li>Fleet Management Dashboard</li>
+          <li>Multi-Zone Autonomous Coverage</li>
+          <li>1-Year Cloud Storage · Unlimited</li>
+          <li>Dedicated Account Manager</li>
+          <li>On-Demand Patrol Service</li>
+          <li>Enterprise SLA · 3-Year Warranty</li>
+        </ul>
+        <div class="product-price">₹99,999<sub> </sub></div>
+        <p class="product-price-note">Includes installation, setup, and staff training</p>
+        <button class="add-to-cart outline" onclick="addToCart('AeroEye Fleet', '₹99,999', '🏭')">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscription add-on -->
+  <div style="margin-top:3rem; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+    <div>
+      <span class="section-label" style="font-size:0.7rem;">Optional Add-On</span>
+      <h3 style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:0.05em;margin-bottom:0.3rem;">REVAN GUARD+ SUBSCRIPTION</h3>
+      <p style="color:var(--muted);font-size:0.85rem;max-width:500px;">24/7 remote monitoring by Revan's security team. Instant police coordination on confirmed alerts. Unlimited cloud storage + monthly health reports.</p>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:var(--font-display);font-size:2rem;color:var(--blue);">₹999<span style="font-size:1rem;color:var(--muted)">/month</span></div>
+      <button class="add-to-cart" style="width:auto;padding:0.7rem 1.5rem;margin-top:0.5rem;" onclick="addToCart('Guard+ Subscription', '₹999/mo', '🛡')">Add Subscription</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials" id="testimonials">
+  <span class="section-label">Validation & Traction</span>
+  <h2 class="section-title">Trusted Across<br/>Tamil Nadu</h2>
+  <p class="section-desc">Surveyed across Salem, Erode &amp; Coimbatore — real feedback from real people.</p>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Security was my top concern — my current cameras miss too many corners. Revan covers my whole house. I'd never go back to CCTV."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Rajesh M.</div>
+          <div class="testi-role">Home Owner · Salem</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Low maintenance is what sold me. We spent a fortune maintaining our CCTV setup. One drone with autopilot is exactly what our office needed."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Priya K.</div>
+          <div class="testi-role">Office Manager · Erode</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Useful for large spaces where cameras can't reach. I put it inside the warehouse and around the perimeter. It's unmatched for the price."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Suresh V.</div>
+          <div class="testi-role">Warehouse Owner · Coimbatore</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Our house had too many corners cameras couldn't see — especially the backyard. Revan gives me that peace of mind I always wanted."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Anitha R.</div>
+          <div class="testi-role">Homemaker · Salem</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Low maintenance is the real deal-breaker. We had people checking CCTVs every week. One autonomous drone that just works? Game changer."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Karthik S.</div>
+          <div class="testi-role">Factory Supervisor · Erode</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-quote">"My shop had a blind lane at the back where cameras were useless. The AeroEye covers it completely and the AI never triggers false alerts."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">👤</div>
+        <div>
+          <div class="testi-name">Deepak N.</div>
+          <div class="testi-role">Shop Owner · Coimbatore</div>
+        </div>
+        <span class="testi-tag">✅ Verified Buyer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <span class="section-label">Ready?</span>
+  <h2 class="section-title">Zero Blind Spots.<br/>Starting Today.</h2>
+  <p class="section-desc">Join homeowners, shops, and warehouses across Tamil Nadu who've upgraded from static CCTV to autonomous aerial security.</p>
+  <div class="cta-actions">
+    <a href="#products" class="btn-primary">⚡ Order The AeroEye</a>
+    <a href="mailto:amar@revan.in" class="btn-outline">✉ Contact Us</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">
+    <a class="nav-logo" href="#"><span>RE</span>VAN</a>
+    <p>Autonomous aerial security, built for India. Zero blind spots. 100% peace of mind.</p>
+    <p style="margin-top:0.8rem;font-size:0.75rem;color:var(--muted);">amar@revan.in · revan.in</p>
+  </div>
+  <div class="footer-col">
+    <h5>Products</h5>
+    <ul>
+      <li><a href="#products">AeroEye Home</a></li>
+      <li><a href="#products">AeroEye Pro</a></li>
+      <li><a href="#products">AeroEye Fleet</a></li>
+      <li><a href="#products">Guard+ Subscription</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Company</h5>
+    <ul>
+      <li><a href="#">About Revan</a></li>
+      <li><a href="#">Our Team</a></li>
+      <li><a href="#">Careers</a></li>
+      <li><a href="#">Press</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Support</h5>
+    <ul>
+      <li><a href="#">Setup Guide</a></li>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Warranty</a></li>
+      <li><a href="mailto:amar@revan.in">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Revan Technologies Pvt. Ltd. · Erode, Tamil Nadu</p>
+    <p>Made with 🛡 in India · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+  </div>
+</footer>
+
+<!-- ── CART DRAWER ── -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>🛒 Your Order</h3>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty" id="cartEmpty">Your cart is empty.<br/>Add a AeroEye to get started.</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>TOTAL</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let cart = [];
+
+  function addToCart(name, price, icon) {
+    cart.push({ name, price, icon, id: Date.now() });
+    updateCart();
+    toggleCart();
+    showToast(`${icon} ${name} added to cart!`);
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(i => i.id !== id);
+    updateCart();
+  }
+
+  function updateCart() {
+    const body = document.getElementById('cartBody');
+    const footer = document.getElementById('cartFooter');
+    const empty = document.getElementById('cartEmpty');
+    const countEl = document.getElementById('cartCount');
+
+    countEl.textContent = cart.length;
+    countEl.style.display = cart.length > 0 ? 'inline-flex' : 'none';
+
+    if (cart.length === 0) {
+      empty.style.display = 'block';
+      footer.style.display = 'none';
+      // remove all items except empty msg
+      [...body.querySelectorAll('.cart-item')].forEach(el => el.remove());
+      return;
+    }
+    empty.style.display = 'none';
+    footer.style.display = 'block';
+    [...body.querySelectorAll('.cart-item')].forEach(el => el.remove());
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div class="cart-item-icon">${item.icon}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">${item.price}</div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">✕</button>
+      `;
+      body.appendChild(div);
+    });
+    // compute total (basic)
+    document.getElementById('cartTotal').textContent = cart.length + ' item(s) — Contact for quote';
+  }
+
+  function toggleCart() {
+    const overlay = document.getElementById('cartOverlay');
+    const drawer = document.getElementById('cartDrawer');
+    overlay.classList.toggle('open');
+    drawer.classList.toggle('open');
+  }
+
+  function checkout() {
+    showToast('📧 Our team will contact you at amar@revan.in to confirm your order!');
+    toggleCart();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
